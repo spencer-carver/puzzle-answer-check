@@ -1,0 +1,15 @@
+{
+    "name": "puzzle-answer-check",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "export": "zip -r puzzle-answer-check.zip . -x \"./.git/*\"",
+        "hint": "node -e \"require('./index').handler({headers: { origin: 'https://spencer.carvers.info' }, requestContext: {}, pathParameters: { puzzleName: 'tutorial' }, body: '{\\\"answer\\\":\\\"HINT\\\",\\\"hintCount\\\":0}' }).then(console.log);\""
+    },
+    "author": "Spencer Carver",
+    "license": "ISC",
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.306.0"
+    }
+}
