@@ -47,7 +47,10 @@ exports.handler = async (event) => {
             submission: candidateAnswer,
             value: ANSWERS_MAP[puzzleName]
         });
-        requestContext.domainName !== STAGING_API_DOMAIN && statsDb.addCorrect(puzzleName);
+        
+        if (origin.startsWith("https")) {
+            statsDb.addCorrect(puzzleName);
+        }
     } else if (Object.keys(INTERMEDIATE_MAP[puzzleName]).indexOf(candidateAnswer) !== -1) {
         response.body = JSON.stringify({
             correct: false,
@@ -55,7 +58,10 @@ exports.handler = async (event) => {
             submission: candidateAnswer,
             value: INTERMEDIATE_MAP[puzzleName][candidateAnswer]
         });
-        requestContext.domainName !== STAGING_API_DOMAIN && statsDb.addIntermediate(puzzleName);
+
+        if (origin.startsWith("https")) {
+            statsDb.addIntermediate(puzzleName);
+        }
     } else if (candidateAnswer === "HINT") {
         const hintIndex = hintCount >= HINTS[puzzleName].length ? HINTS[puzzleName].length - 1 : hintCount;
         response.body = JSON.stringify({
@@ -64,14 +70,20 @@ exports.handler = async (event) => {
             submission: candidateAnswer,
             value: HINTS[puzzleName][hintIndex]
         });
-        requestContext.domainName !== STAGING_API_DOMAIN && statsDb.addHint(puzzleName);
+        
+        if (origin.startsWith("https")) {
+            statsDb.addHint(puzzleName);
+        }
     } else {
         response.body = JSON.stringify({
             correct: false,
             submission: candidateAnswer,
             value: candidateAnswer
         });
-        requestContext.domainName !== STAGING_API_DOMAIN && statsDb.addIncorrect(puzzleName);
+        
+        if (origin.startsWith("https")) {
+            statsDb.addIncorrect(puzzleName);
+        }
     }
 
     return response;
