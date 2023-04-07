@@ -2,7 +2,7 @@ const INTERMEDIATE_MAP = require("./intermediates");
 const ANSWERS_MAP = require("./answers");
 const HINTS = require("./hints");
 const { isAllowed, STAGING_API_DOMAIN } = require("./private-helpers");
-const statsDb = require("./statsDb");
+const statsHelper = require("./statsHelper");
 
 function massageAnswer(answer) {
     return answer.toUpperCase().replace(/\\p{Punct}/g, "").replace(/-/g, "").replace(/\s/g, "").replace(/[!-\/:-@[-`{-~]/g, "");
@@ -49,7 +49,7 @@ exports.handler = async (event) => {
         });
         
         if (origin.startsWith("https")) {
-            statsDb.addCorrect(puzzleName);
+            await statsHelper.addCorrect(origin, puzzleName);
         }
     } else if (Object.keys(INTERMEDIATE_MAP[puzzleName]).indexOf(candidateAnswer) !== -1) {
         response.body = JSON.stringify({
@@ -60,7 +60,7 @@ exports.handler = async (event) => {
         });
 
         if (origin.startsWith("https")) {
-            statsDb.addIntermediate(puzzleName);
+            await statsHelper.addIntermediate(origin, puzzleName);
         }
     } else if (candidateAnswer === "HINT") {
         const hintIndex = hintCount >= HINTS[puzzleName].length ? HINTS[puzzleName].length - 1 : hintCount;
@@ -72,7 +72,7 @@ exports.handler = async (event) => {
         });
         
         if (origin.startsWith("https")) {
-            statsDb.addHint(puzzleName);
+            await statsHelper.addHint(origin, puzzleName);
         }
     } else {
         response.body = JSON.stringify({
@@ -82,7 +82,7 @@ exports.handler = async (event) => {
         });
         
         if (origin.startsWith("https")) {
-            statsDb.addIncorrect(puzzleName);
+            await statsHelper.addIncorrect(origin, puzzleName, candidateAnswer);
         }
     }
 
