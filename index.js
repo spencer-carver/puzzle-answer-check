@@ -27,7 +27,7 @@ exports.handler = async (event) => {
     }
 
     const { puzzleName } = pathParameters;
-    const { answer, hintCount } = JSON.parse(body);
+    const { uuid, answer, hintCount } = JSON.parse(body);
     
     const response = {
         statusCode: 200,
@@ -49,7 +49,7 @@ exports.handler = async (event) => {
         });
         
         if (origin.startsWith("https")) {
-            await statsHelper.addCorrect(origin, puzzleName);
+            await statsHelper.addCorrect(origin, puzzleName, uuid);
         }
     } else if (Object.keys(INTERMEDIATE_MAP[puzzleName]).indexOf(candidateAnswer) !== -1) {
         response.body = JSON.stringify({

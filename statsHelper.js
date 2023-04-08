@@ -1,7 +1,7 @@
 const { LambdaClient, InvokeCommand } = require("@aws-sdk/client-lambda");
 const client = new LambdaClient();
 
-function formatCommand({ origin, operation, puzzleName, answer }) {
+function formatCommand({ origin, operation, puzzleName, answer, uuid }) {
     return new InvokeCommand({
         FunctionName: "puzzle-stats",
         InvocationType: "Event",
@@ -17,7 +17,8 @@ function formatCommand({ origin, operation, puzzleName, answer }) {
             },
             body: JSON.stringify({
                 operation,
-                answer
+                answer,
+                uuid
             })
         })
     });
@@ -31,8 +32,8 @@ async function addIntermediate(origin, puzzleName) {
     return client.send(formatCommand({ origin, operation: "intermediate", puzzleName }));
 }
 
-async function addCorrect(origin, puzzleName) {
-    return client.send(formatCommand({ origin, operation: "correct", puzzleName }));
+async function addCorrect(origin, puzzleName, uuid) {
+    return client.send(formatCommand({ origin, operation: "correct", puzzleName, uuid }));
 }
 
 async function addIncorrect(origin, puzzleName, candidateAnswer) {
