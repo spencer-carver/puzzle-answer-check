@@ -5,7 +5,13 @@ const { isAllowed, STAGING_API_DOMAIN } = require("./private-helpers");
 const statsHelper = require("./statsHelper");
 
 function massageAnswer(answer) {
-    return answer.toUpperCase().replace(/\\p{Punct}/g, "").replace(/-/g, "").replace(/\s/g, "").replace(/[!-\/:-@[-`{-~]/g, "");
+    return answer
+        .split("|")[0]
+        .toUpperCase()
+        .replace(/\\p{Punct}/g, "")
+        .replace(/-/g, "")
+        .replace(/\s/g, "")
+        .replace(/[!-\/:-@[-`{-~]/g, "");
 }
 
 exports.handler = async (event) => {
@@ -39,13 +45,13 @@ exports.handler = async (event) => {
     };
     
     const candidateAnswer = massageAnswer(answer);
-    const solution = massageAnswer(ANSWERS_MAP[puzzleName]);
+    const solutions = ANSWERS_MAP[puzzleName].map(massageAnswer);
     
-    if (solution === candidateAnswer) {
+    if (solutions.includes(candidateAnswer)) {
         response.body = JSON.stringify({
             correct: true,
             submission: candidateAnswer,
-            value: ANSWERS_MAP[puzzleName]
+            value: ANSWERS_MAP[puzzleName][0]
         });
         
         if (origin.startsWith("https")) {
