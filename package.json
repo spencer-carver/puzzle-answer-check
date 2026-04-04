@@ -6,6 +6,7 @@
     "scripts": {
         "export": "zip -r puzzle-answer-check.zip . -x \"./.git/*\"",
         "hint": "node -e \"require('./index').handler({headers: { origin: 'https://spencer.carvers.info' }, requestContext: {}, pathParameters: { puzzleName: 'tutorial' }, body: '{\\\"answer\\\":\\\"HINT\\\",\\\"hintCount\\\":0}' }).then(console.log);\""
+        "deploy": "aws lambda update-function-code --function-name puzzle-answer-check --zip-file fileb://puzzle-answer-check.zip"
     },
     "author": "Spencer Carver",
     "license": "ISC",
